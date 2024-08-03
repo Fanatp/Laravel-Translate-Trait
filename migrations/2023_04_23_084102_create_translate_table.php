@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('model')->nullable(false);
             $table->string('column')->nullable(false);
-            $table->string('key')->nullable(false)->uniaue();
+            $table->string('key')->nullable(false)->unique();
             $table->string('value')->nullable(false);
             $table->string('locale')->nullable(false);
         });
