@@ -15,7 +15,7 @@ trait Translate
         return get_class($this);
     }
 
-    public function setTranslate(srting $column,mixed $value,string $locale):void
+    public function setTranslate(srting $column,string $value,string $locale):void
     {
       
         $res = DB::table('translate')
