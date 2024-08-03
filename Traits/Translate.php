@@ -5,7 +5,7 @@ namespace App\Http\Traits;
 use Illuminate\Support\Facades\DB;
 
 /**
- * 
+ * @var Translate
  */
 trait Translate
 {
@@ -15,18 +15,17 @@ trait Translate
         return get_class($this);
     }
 
-    public function setTranslate($column,$value, $locale)
+    public function setTranslate(srting $column,mixed $value,string $locale):void
     {
       
         $res = DB::table('translate')
         ->updateOrInsert(
         ["model" => $this->getModelName(),"column" => $column,"key" => $this->getKey(),"locale" => $locale],
         ['value' => $value]);
-
-        return response()->json(["status" => "200 OK"]);
     }
 
-    public function getTranslate($column, $locale){
+    public function getTranslate(string $column,string $locale):string
+    {
         $res = DB::table('translate')
         ->where('model', $this->getModelName())
         ->where('column', $column)
@@ -37,7 +36,6 @@ trait Translate
 
         $noTranslate = self::find($this->getKey());
 
-        // return abort(403, 'Переклад відсутній ');
 
         if($noTranslate->$column !== null)
         {
