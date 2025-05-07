@@ -30,7 +30,7 @@ trait Translate
      */
     protected function translates():hasMany
     {
-        return $this->hasMany(Translate::class, 'key', 'id')
+        return $this->hasMany(TranslateModel::class, 'key', 'id')
             ->where('model', static::class);
     }
 
