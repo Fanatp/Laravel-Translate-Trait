@@ -2,16 +2,22 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @method static updateOrCreate(array $array, array[] $array1)
+ */
 class Translate extends Model
 {
-    use HasFactory;
-
     protected $table = 'translate';
 
-    protected $fillable = ["*"];
+    protected $fillable = [
+        'model',
+        'column',
+        'key',
+        'locale',
+        'value',
+    ];
 
     public $timestamps = false;
 }
