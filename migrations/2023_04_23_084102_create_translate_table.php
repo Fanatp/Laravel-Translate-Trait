@@ -13,11 +13,13 @@ return new class extends Migration
     {
         Schema::create('translate', function (Blueprint $table) {
             $table->id();
-            $table->string('model')->nullable(false);
-            $table->string('column')->nullable(false);
-            $table->string('key')->nullable(false)->unique();
-            $table->string('value')->nullable(false);
-            $table->string('locale')->nullable(false);
+            $table->string('model');
+            $table->string('column');
+            $table->unsignedBigInteger('key');
+            $table->string('locale', 10);
+            $table->text('value');
+
+            $table->unique(['model', 'column', 'key', 'locale']);
         });
     }
 
