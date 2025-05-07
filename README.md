@@ -67,7 +67,17 @@ public function createArticle(Request $request)
         "content" => $request->input("content")
     ]);
 
-      $article->setTranslate('content', 'Контент English !', 'en');
+      $article->setTranslate('content',  'en', 'Контент English !');
+
+OR   $article->setTranslates("en",[
+            "title" => "title for en locale",
+            "content" => "content for en locale"
+        ]);
+
+AND $article->setTranslates("pl",[
+            "title" => "title for pl locale",
+            "content" => "content for pl locale"
+        ]);
 
       return redirect()->route("article");
    }
@@ -82,7 +92,20 @@ public function createArticle(Request $request)
         $article->content  = $request->input("content");
         $article->save();
 
-        $article->setTranslate('content', 'Контент English !', 'en');
+        $article->setTranslate('content',  'en', 'Контент English !');
+
+        OR   $article->setTranslates("en",[
+                    "title" => "title for en locale",
+                    "content" => "content for en locale"
+                ]);
+        
+        AND $article->setTranslates("pl",[
+                    "title" => "title for pl locale",
+                    "content" => "content for pl locale"
+                ]);
+        
+              return redirect()->route("article");
+           }
 
       return redirect()->route("article");
    }
