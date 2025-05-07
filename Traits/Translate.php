@@ -1,50 +1,107 @@
 <?php
 
-namespace App\Http\Traits;
+namespace App\Traits;
 
-use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\App;
+use App\Models\Translate as TranslateModel;
 
 /**
- * @var Translate
+ * @method getKey()
+ * @method static find($getKey)
+ * @method static addGlobalScope(string $string, \Closure $param)
+ * @method hasMany(string $class, string $string, string $string1)
  */
 trait Translate
 {
-
-    public function getModelName()
+    /**
+     * Automatically eager load translates relation by default.
+     */
+    protected static function bootHasTranslates(): void
     {
-        return get_class($this);
+        static::addGlobalScope('withTranslates', function (Builder $builder) {
+            $builder->with('translates');
+        });
     }
 
-    public function setTranslate(srting $column,string $value,string $locale):void
+    /**
+     * Відношення до перекладів
+     */
+    protected function translates():hasMany
     {
-      
-        $res = DB::table('translate')
-        ->updateOrInsert(
-        ["model" => $this->getModelName(),"column" => $column,"key" => $this->getKey(),"locale" => $locale],
-        ['value' => $value]);
+        return $this->hasMany(Translate::class, 'key', 'id')
+            ->where('model', static::class);
     }
 
-    public function getTranslate(string $column,string $locale):string
+    /**
+     * Отримати перекладене значення або fallback
+     */
+    public function getTranslate(string $column, string $locale = null): string
     {
-        $res = DB::table('translate')
-        ->where('model', $this->getModelName())
-        ->where('column', $column)
-        ->where('key', $this->getKey())
-        ->where('locale', $locale)->first();
+        $locale = $locale ?? App::getLocale();
 
-        if($res) return $res->value;
+        $translated = $this->translates
+            ->where('column', $column)
+            ->where('locale', $locale)
+            ->first()->value();
 
-        $noTranslate = self::find($this->getKey());
+        return $translated ?? $this->$column;
+    }
+
+    /**
+     * Отримати всі переклади для API
+     */
+    public function getTranslatesForApi(string $locale = null): array
+    {
+        $locale = $locale ?? App::getLocale();
+
+        $translations = $this->translates
+            ->where('locale', $locale)
+            ->pluck('value', 'column')
+            ->toArray();
 
 
-        if($noTranslate->$column !== null)
-        {
-            return $noTranslate->$column;
-        }else{
-            return abort(403, 'Такої колонки для перекладу немає в базі !');
+        foreach ($this->getAttributes() as $column => $value) {
+            if (!array_key_exists($column, $translations) && !is_null($value)) {
+                $translations[$column] = $value;
+            }
         }
-        
-        
+
+        return $translations;
     }
-    
+
+    public function setTranslate(string $field, string $locale, string $value): void
+    {
+
+        TranslateModel::updateOrCreate([
+                'model'  => static::class,
+                'column' => $field,
+                'key'    => $this->getKey(),
+                'locale' => $locale,
+            ], [
+                'value' => $value,
+            ]);
+
+    }
+
+    /**
+     * Зберегти переклади
+     */
+    public function setTranslates(string $locale, array $data): void
+    {
+        foreach ($data[0] as $column => $value) {
+            if (!empty($value)) {
+                TranslateModel::updateOrCreate([
+                    'model'  => static::class,
+                    'column' => $column,
+                    'key'    => $this->getKey(),
+                    'locale' => $locale,
+                ], [
+                    'value' => $value,
+                ]);
+            }
+        }
+    }
+
 }
