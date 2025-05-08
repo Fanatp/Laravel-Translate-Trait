@@ -120,7 +120,7 @@ public function createArticle(Request $request)
 }
 ```
 
-## Одного конкретного  *** delTranslate(string $column, string $locale) ***
+## Одного конкретного  ***delTranslate(string $column, string $locale)***
 
 ```
 $article->delTranslate("title", "en");
