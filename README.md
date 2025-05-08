@@ -52,7 +52,7 @@ public function getArticles()
    }
    ```
 
-## ***setTranslate($column,$value, $locale)***
+## ***setTranslate($column,$locale, $value)*** OR  ***setTranslates($locale, $data)*** => format ["column" => [value]
 
 Може бути використана в контролері для додавання перекладу.Пілся додавання базового тексту або пошуку запису бази даних по критерію можна викликати дану функцію для додавання перекладу.
 
@@ -110,4 +110,20 @@ public function createArticle(Request $request)
       return redirect()->route("article");
    }
    ```
+### Видалення
+
+## Всіх записів поста
+
+```
+ if ($article->translates()->exists()) {
+            $article->translates()->delete();
+}
+```
+
+## Одного конкретного  *** delTranslate(string $column, string $locale) ***
+
+```
+$article->delTranslate("title", "en");
+
+```
 
