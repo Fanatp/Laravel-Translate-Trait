@@ -104,4 +104,12 @@ trait Translate
         }
     }
 
+       public function delTranslate(string $column, string $locale,):void
+    {
+        $this->translates()
+            ->where('column', $column)
+            ->where('locale', $locale)
+            ->delete();
+    }
+
 }
