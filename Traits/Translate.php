@@ -44,9 +44,9 @@ trait Translate
         $translated = $this->translates
             ->where('column', $column)
             ->where('locale', $locale)
-            ->first()->value();
+            ->first();
 
-        return $translated ?? $this->$column;
+        return $translated->value() ?? $this->$column;
     }
 
     /**
